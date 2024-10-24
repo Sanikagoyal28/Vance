@@ -1,25 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Dashboard from "./Component/Dashboard/page";
+import RateAlert from "./Component/Dashboard/RateAlert";
+import LandingPage from "./Component/LandingPage/page";
+import Navbar from "./Component/Navbar";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <>
+  <Navbar />
+  {/* <LandingPage /> */}
+  {/* <Dashboard /> */}
+  <RateAlert />
+  </>;
 }
 
 export default App;
