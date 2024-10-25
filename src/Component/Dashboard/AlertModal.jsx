@@ -3,7 +3,7 @@ import UK from "../../assets/UK.svg";
 import UAE from "../../assets/UAE.png";
 import { useState } from "react";
 import { db } from "../../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, updateDoc, where, writeBatch } from "firebase/firestore";
 import { UserAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,27 +39,48 @@ export default function AlertModal(props) {
         isTriggered: false,
       });
 
+      const alertsRef = collection(db, "alerts");
+      const alertsQuery = query(
+        alertsRef,
+        where("userId", "==", user.uid),
+        where("currency", "==", currency),
+        where("targetRate", ">=", parseFloat(rate)),
+        where("isTriggered", "==", false)
+      );
+
+      const querySnapshot = await getDocs(alertsQuery);
+
+      const batch = writeBatch(db);
+      querySnapshot.docs.forEach((alertDoc) => {
+        batch.update(alertDoc.ref, { isTriggered: true });
+      });
+      await batch.commit();
+
       toast.success("New Alert added");
+      handleClose();
     } catch (error) {
       console.error("Error adding alert: ", error);
     }
   }
 
-  function handleCancel() {
+  function handleClose() {
     setOpen(false);
+    setRate("");
+    setTitle("");
   }
 
   return (
     <>
       <Modal
         open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
+        onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={style} className="xl:w-1/3 md:w-1/2 sm:w-3/5 w-4/5 max-w-xl outline-none">
+        <Box
+          sx={style}
+          className="xl:w-1/3 md:w-1/2 sm:w-3/5 w-4/5 max-w-xl outline-none"
+        >
           <div className="bg-[#333333] rounded-lg shadow-lg py-4 w-full flex flex-col justify-center items-center px-8">
             <p className="text-white font-semibold mb-5">Set Rate Alert!</p>
 
@@ -78,7 +99,7 @@ export default function AlertModal(props) {
                 <label className="text-sm text-[#D5D6DE] mb-2">Title</label>
                 <input
                   type="text"
-                  className="bg-[#4F4F4F] rounded-xl px-2 py-3 text-white text-sm w-full"
+                  className="bg-[#4F4F4F] rounded-xl px-2 py-3 text-white outline-none text-sm w-full"
                   placeholder="Send money home"
                   value={title}
                   onChange={(e) => {
@@ -94,7 +115,7 @@ export default function AlertModal(props) {
                 </label>
                 <input
                   type="text"
-                  className="bg-[#4F4F4F] rounded-xl px-2 py-3 text-white text-sm w-full"
+                  className="bg-[#4F4F4F] rounded-xl px-2 py-3 text-white text-sm w-full outline-none"
                   placeholder="₹ 100"
                   value={rate}
                   onChange={(e) => {
@@ -114,7 +135,10 @@ export default function AlertModal(props) {
                 </span>
               </button>
 
-              <button className="text-sm opacity-60 text-white cursor-pointer my-2 flex justify-center w-full">
+              <button
+                className="text-sm opacity-60 text-white cursor-pointer my-2 flex justify-center w-full"
+                onClick={handleClose}
+              >
                 Cancel
               </button>
             </form>

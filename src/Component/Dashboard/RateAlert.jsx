@@ -15,6 +15,8 @@ import axios from "axios";
 import UK from "../../assets/UK.svg";
 import { db } from "../../firebase";
 import { collection, query, onSnapshot, doc } from "firebase/firestore";
+import Navbar from "../Navbar";
+import { CircularProgress } from "@mui/material";
 
 export default function RateAlert() {
   const [open, setOpen] = useState(false);
@@ -22,6 +24,8 @@ export default function RateAlert() {
   const [graphData, setGraphData] = useState([]);
   const [latestrate, setLatestrate] = useState(0);
   const [alerts, setAlerts] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   function handleCurrency(e) {
     setCurrency(e.target.value);
@@ -44,6 +48,7 @@ export default function RateAlert() {
   }, [currency]);
 
   useEffect(() => {
+    setLoader(true);
     const q = query(collection(db, "alerts"));
     const unsub = onSnapshot(q, (querySnapshot) => {
       var prev_alerts = [];
@@ -52,17 +57,25 @@ export default function RateAlert() {
       });
 
       setAlerts(prev_alerts);
+      setLoader(false);
     });
 
     return () => unsub();
-  }, []);
+  }, [currentPage]);
 
-  console.log(alerts);
+  const pageCount = Math.ceil(alerts.length / 5);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
+  console.log(alerts)
 
   return (
     <>
+      <Navbar />
       <div className="bg-black w-full h-full">
-        <div className="mt-16 py-8 flex flex-col justify-center items-center m-auto w-4/5 sm:w-[460px] max-w-xl">
+        <div className="mt-20 py-8 flex flex-col justify-center items-center m-auto w-4/5 sm:w-[460px] max-w-xl">
           <p className="font-semibold text-3xl text-white">
             Rate alert dashboard
           </p>
@@ -148,7 +161,9 @@ export default function RateAlert() {
                 Previous alerts
               </p>
               <Pagination
-                count={10}
+                page={currentPage}
+                onChange={handlePageChange}
+                count={pageCount}
                 siblingCount={0}
                 boundaryCount={1}
                 shape="rounded"
@@ -170,10 +185,18 @@ export default function RateAlert() {
               />
             </div>
 
+            {loader && (
+              <div className="w-full text-center">
+                <CircularProgress />
+              </div>
+            )}
+
             {alerts.length > 0 ? (
-              alerts.map((data) => {
-                return <Alert key={data.id} data={data} />;
-              })
+              alerts
+                .slice((currentPage - 1) * 5, currentPage * 5)
+                .map((data) => {
+                  return <Alert key={data.id} data={data} />;
+                })
             ) : (
               <p>No previous alerts</p>
             )}
@@ -186,7 +209,4 @@ export default function RateAlert() {
   );
 }
 
-// alert rate notify - firebase 5
-// navbar 3
-// testing
-// loader
+// update alert me error?

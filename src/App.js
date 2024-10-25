@@ -11,7 +11,6 @@ function App() {
   return (
     <>
       <AuthContextProvider>
-        <Navbar />
         <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />

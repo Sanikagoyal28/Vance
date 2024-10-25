@@ -1,10 +1,12 @@
 import appStore from "../../assets/appstore.svg";
 import playstore from "../../assets/playstore.svg";
 import phone from "../../assets/phone.svg";
+import Navbar from "../Navbar";
 
 export default function LandingPage() {
   return (
     <>
+    <Navbar />
       <div className="text-center flex flex-col justify-center items-center my-32">
         <p className="font-bold text-5xl mb-4">
           Send money to India at Google rates.

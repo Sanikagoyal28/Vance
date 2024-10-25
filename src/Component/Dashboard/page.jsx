@@ -3,6 +3,7 @@ import { UserAuth } from "../../context/AuthContext";
 import google from "../../assets/Google.svg";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
+import Navbar from "../Navbar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function Dashboard() {
 
   return (
     <>
+    <Navbar />
       <div className="flex flex-col justify-center items-center bg-black w-full min-h-[100vh] text-white">
         <div className="w-80 sm:w-96 text-center mt-40 mb-32">
           <div
