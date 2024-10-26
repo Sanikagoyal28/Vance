@@ -3,7 +3,16 @@ import UK from "../../assets/UK.svg";
 import UAE from "../../assets/UAE.png";
 import { useState } from "react";
 import { db } from "../../firebase";
-import { addDoc, collection, doc, getDocs, query, updateDoc, where, writeBatch } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 import { UserAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,14 +39,14 @@ export default function AlertModal(props) {
     e.preventDefault();
 
     try {
-      await addDoc(collection(db, "alerts"), {
-        userId: user.uid,
-        currency,
-        title,
-        targetRate: parseFloat(rate),
-        createdAt: new Date(),
-        isTriggered: false,
-      });
+      // await addDoc(collection(db, "alerts"), {
+      //   userId: user.uid,
+      //   currency,
+      //   title,
+      //   targetRate: parseFloat(rate),
+      //   createdAt: new Date(),
+      //   isTriggered: false,
+      // });
 
       const alertsRef = collection(db, "alerts");
       const alertsQuery = query(
@@ -47,19 +56,20 @@ export default function AlertModal(props) {
         where("targetRate", ">=", parseFloat(rate)),
         where("isTriggered", "==", false)
       );
-
       const querySnapshot = await getDocs(alertsQuery);
-
-      const batch = writeBatch(db);
-      querySnapshot.docs.forEach((alertDoc) => {
-        batch.update(alertDoc.ref, { isTriggered: true });
+      
+      const updatePromises = querySnapshot.docs.map((alertDoc) => {
+        const alertRef = doc(db, "alerts", alertDoc.id);
+        return updateDoc(alertRef, { isTriggered: true });
       });
-      await batch.commit();
+
+      await Promise.all(updatePromises);
 
       toast.success("New Alert added");
+
       handleClose();
     } catch (error) {
-      console.error("Error adding alert: ", error);
+      console.error(error);
     }
   }
 

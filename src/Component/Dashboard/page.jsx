@@ -10,11 +10,11 @@ export default function Dashboard() {
 
   const { googleSignIn, user } = UserAuth();
 
-  useEffect(() => {
-    if (user) {
-      navigate("/rate-alert-dashboard");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/rate-alert-dashboard");
+  //   }
+  // }, [user, navigate]);
 
   async function handleGoogleAuth() {
     try {
@@ -29,16 +29,16 @@ export default function Dashboard() {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="flex flex-col justify-center items-center bg-black w-full min-h-[100vh] text-white">
         <div className="w-80 sm:w-96 text-center mt-40 mb-32">
-          <div
-            className="rounded-full"
-            style={{ background: "radial-gradient(circle, #4602D9, #111111)" }}
-          >
-            <img src={megaphone} className="w-36 m-auto" />
+          <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
+            <div className="absolute inset-0 justify-center">
+              <div className="bg-shape1 bg-[#4602D9] opacity-50 bg-blur"></div>
+            </div>
           </div>
-          <p className="font-bold text-3xl mb-6">
+          <img src={megaphone} className="w-36 m-auto z-20" />
+          <p className="font-bold text-3xl mb-6 z-20">
             Access <br />
             rate alert dashboard
           </p>

@@ -69,8 +69,6 @@ export default function RateAlert() {
     setCurrentPage(page);
   };
 
-  console.log(alerts)
-
   return (
     <>
       <Navbar />
@@ -209,4 +207,3 @@ export default function RateAlert() {
   );
 }
 
-// update alert me error?

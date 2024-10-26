@@ -8,7 +8,8 @@ import redPhone from "../../assets/redPhone.svg";
 import joline from "../../assets/jolinePopup.png";
 import hardik from "../../assets/HardikPopup.png";
 import MP from "../../assets/MpPopup.png";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import { useEffect, useRef, useState } from "react";
 
 export default function LandingPage() {
@@ -23,7 +24,7 @@ export default function LandingPage() {
   const phoneY = useTransform(scrollY, [100, 200], [0, -50]);
   const phoneOpacity = useTransform(scrollY, [80, 140], [0.5, 1]);
   const textOpacity = useTransform(scrollY, [80, 120], [1, 0]);
-  const text2Opacity = useTransform(scrollY, [80, 150], [0, 1]);
+  const text2Opacity = useTransform(scrollY, [80, 240], [0, 1]);
   const x = useTransform(scrollY, [80, 120], [-100, 0]);
   const imageScale = useTransform(
     scrollY,
@@ -36,11 +37,6 @@ export default function LandingPage() {
     [0, 140, 200, 350],
     [0, 1, 0.8, 0.4]
   );
-
-  const boxVariant = {
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-    hidden: { opacity: 0, scale: 0 },
-  };
 
   useEffect(() => {
     scrollY.onChange((currentY) => {
@@ -63,9 +59,12 @@ export default function LandingPage() {
   return (
     <>
       <Navbar />
-      <div ref={containerRef} className={`min-h-[120vh] ${bgcolor} h-screen`}>
-        {/* <div className="absolute inset-0 bg-gradient-to- from-red-900/50 to-black z-0"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxsaW5lIHgxPSIwIiB5PSIwIiB4Mj0iMCIgeTI9IjQwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+')] z-10"></div> */}
+      <div ref={containerRef} className={`min-h-[120vh] h-screen`}>
+        {/* <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
+          <div className="absolute inset-0 justify-center overflow-hidden">
+            <div className="w-screen h-[100vh] relative rounded-[9999px] bg-[#4602D9] opacity-50 bg-blur"></div>
+          </div>
+        </div> */}
         <motion.div
           className="text-center flex flex-col justify-center items-center py-32 w-3/4 m-auto z-15"
           style={{
@@ -86,12 +85,12 @@ export default function LandingPage() {
         </motion.div>
 
         <motion.div
-          className="text-center flex flex-col justify-center items-center py-32 w-1/2 m-auto absolute top-0 left-1/4 z-15"
+          className="text-center flex flex-col justify-center items-center py-32 w-1/2 m-auto absolute top-0 left-1/4 z-20"
           style={{
             opacity: text2Opacity,
             x,
           }}
-          transition={{ duration: 2, ease: "easeOut" }}
+          transition={{ duration: 3, ease: "easeOut" }}
         >
           <p className="font-bold text-5xl mb-4">
             Always know when it’s a good time to transfer with
@@ -116,51 +115,67 @@ export default function LandingPage() {
               y: phoneY,
               opacity: phoneOpacity,
             }}
-            className="w-[450px] rounded-[40px] overflow-hidden absolute left-[38%] bottom-[-400px] z-20"
+            className="w-[450px] rounded-[40px] overflow-hidden absolute left-[38%] bottom-[-400px] z-30"
           >
             <img src={phoneImg} className="my-auto" />
           </motion.div>
 
           <motion.img
             src={joline}
-            variants={boxVariant}
-            // initial="hidden"
-            // animate={control}
-            className="w-72 opacity-40 fixed top-32 left-72 z-10 overflow-hidden"
-            // style={{ scale: imageScale}}
+            className="w-72 opacity-40 fixed top-32 left-72 overflow-hidden z-10"
+            style={{ scale: imageScale }}
           />
 
           <motion.img
             src={joline}
-            className="w-80 fixed top-[204px] left-56 opacity-100"
-            // style={{ scale: imageScale }}
+            className="w-80 fixed top-[204px] left-56 opacity-100 z-10"
+            style={{ scale: imageScale }}
           />
 
           <motion.img
             src={MP}
-            className="w-80 opacity-60 fixed top-72 left-48"
-            // style={{ scale: imageScale, opacity: imageOpacity }}
+            className="w-80 opacity-60 fixed top-72 z-10 left-48"
+            style={{ scale: imageScale }}
           />
 
           <motion.img
             src={hardik}
-            className="w-80 fixed top-[370px] left-56 opacity-100"
-            // style={{ scale: imageScale }}
+            className="w-80 fixed top-[370px] left-56 z-10 opacity-100"
+            style={{ scale: imageScale }}
           />
           <motion.img
             src={joline}
-            variants={boxVariant}
             className="w-64 opacity-40 fixed top-[470px] left-72 z-10 overflow-hidden"
-            // style={{ scale: imageScale}}
+            style={{ scale: imageScale }}
           />
-          <motion.img src={MP} className="w-72 fixed top-24 right-52 opacity-30" />
-          <motion.img src={MP} className="w-80 fixed top-[172px] right-40 opacity-80" />
+          <motion.img
+            src={MP}
+            className="w-72 fixed top-24 right-52 opacity-30 z-10"
+            style={{ scale: imageScale }}
+          />
+          <motion.img
+            src={MP}
+            className="w-80 fixed top-[172px] right-40 opacity-80 z-10"
+            style={{ scale: imageScale }}
+          />
 
-          <motion.img src={hardik} className="w-[350px] opacity-100 fixed top-64 right-32" />
+          <motion.img
+            src={hardik}
+            className="w-[350px] opacity-100 fixed top-64 right-32 z-10"
+            style={{ scale: imageScale }}
+          />
 
-          <motion.img src={joline} className="w-80 opacity-40 fixed top-[355px] right-52" />
+          <motion.img
+            src={joline}
+            className="w-80 opacity-40 fixed top-[355px] right-52 z-10"
+            style={{ scale: imageScale }}
+          />
 
-          <motion.img src={hardik} className="shadow-md w-64 fixed right-60 opacity-20" />
+          <motion.img
+            src={hardik}
+            className="z-10 shadow-md w-64 fixed right-60 opacity-20"
+            style={{ scale: imageScale }}
+          />
         </div>
       </div>
     </>
