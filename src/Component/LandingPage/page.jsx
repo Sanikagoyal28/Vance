@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 export default function LandingPage() {
   const [phoneImg, setPhoneImg] = useState(phone);
   const [bgcolor, setBgcolor] = useState("bg-white");
+  const [blur, setBlur] = useState("");
   const containerRef = useRef(null);
   const phoneRef = useRef(null);
 
@@ -24,7 +25,7 @@ export default function LandingPage() {
   const phoneY = useTransform(scrollY, [100, 200], [0, -50]);
   const phoneOpacity = useTransform(scrollY, [80, 140], [0.5, 1]);
   const textOpacity = useTransform(scrollY, [80, 120], [1, 0]);
-  const text2Opacity = useTransform(scrollY, [80, 240], [0, 1]);
+  const text2Opacity = useTransform(scrollY, [80, 160], [0, 1]);
   const x = useTransform(scrollY, [80, 120], [-100, 0]);
   const imageScale = useTransform(
     scrollY,
@@ -32,26 +33,24 @@ export default function LandingPage() {
     [0, 1.2, 1, 0.7, 0.6]
   );
 
-  const imageOpacity = useTransform(
-    scrollY,
-    [0, 140, 200, 350],
-    [0, 1, 0.8, 0.4]
-  );
-
   useEffect(() => {
     scrollY.onChange((currentY) => {
       if (currentY < 50) {
         setPhoneImg(phone);
         setBgcolor("bg-white");
+        setBlur("")
       } else if (currentY < 150) {
         setPhoneImg(blackPhone);
-        setBgcolor("bg-white");
+        setBgcolor("");
+        setBlur("")
       } else if (currentY < 270) {
         setPhoneImg(purplePhone);
-        setBgcolor("bg-[#4602D9]");
+        setBlur("bg-[#4602D9]");
+        setBgcolor("");
       } else {
         setPhoneImg(redPhone);
-        setBgcolor("bg-[#FF3A44BF]");
+        setBgcolor("");
+        setBlur("bg-[#C31111]");
       }
     });
   }, [scrollY]);
@@ -59,12 +58,7 @@ export default function LandingPage() {
   return (
     <>
       <Navbar />
-      <div ref={containerRef} className={`min-h-[120vh] h-screen`}>
-        {/* <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
-          <div className="absolute inset-0 justify-center overflow-hidden">
-            <div className="w-screen h-[100vh] relative rounded-[9999px] bg-[#4602D9] opacity-50 bg-blur"></div>
-          </div>
-        </div> */}
+      <div ref={containerRef} className={`min-h-[120vh] ${bgcolor} h-screen`}>
         <motion.div
           className="text-center flex flex-col justify-center items-center py-32 w-3/4 m-auto z-15"
           style={{
@@ -92,10 +86,10 @@ export default function LandingPage() {
           }}
           transition={{ duration: 3, ease: "easeOut" }}
         >
-          <p className="font-bold text-5xl mb-4">
+          <p className="font-bold text-5xl mb-4 text-white">
             Always know when it’s a good time to transfer with
           </p>
-          <p className="font-medium text-lg text-gray-600">
+          <p className="font-medium text-lg text-gray-200">
             Whether you're sending money home, paying for services in a
             different currency, or managing investments - Set a desired rate,
             and we'll notify you when it's time to make your move.{" "}
@@ -145,7 +139,7 @@ export default function LandingPage() {
           />
           <motion.img
             src={joline}
-            className="w-64 opacity-40 fixed top-[470px] left-72 z-10 overflow-hidden"
+            className="w-64 opacity-40 fixed top-[470px] left-80 z-10 overflow-hidden"
             style={{ scale: imageScale }}
           />
           <motion.img
@@ -176,6 +170,14 @@ export default function LandingPage() {
             className="z-10 shadow-md w-64 fixed right-60 opacity-20"
             style={{ scale: imageScale }}
           />
+        </div>
+      </div>
+
+      <div className="absolute top-12 z-[5] left-0 inline-flex justify-center inset-0 flex-row h-[160vh]">
+        <div className="absolute inset-0 justify-center overflow-hidden">
+          <div
+            className={`w-[60vw] h-full m-auto relative rounded-[9999px] ${blur} opacity-50 bg-blue-blur`}
+          ></div>
         </div>
       </div>
     </>

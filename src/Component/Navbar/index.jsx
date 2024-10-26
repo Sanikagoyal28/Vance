@@ -7,14 +7,11 @@ export default function Navbar() {
   const { user, logOut } = UserAuth();
   const navigate = useNavigate();
 
-  // console.log(user);
-
   const handleSignOut = async () => {
     try {
       await logOut();
       navigate("/");
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -30,12 +27,14 @@ export default function Navbar() {
           </button>
         </div>
         <div className="flex gap-x-4 items-center">
-          <div className="flex flex-col items-center">
-            <Link to="/rate-alert-dashboard">
-              <img src={user?.photoURL} className="rounded-full w-10 h-10" />
-            </Link>
-            {/* <span className="text-sm">{user?.displayName}</span> */}
-          </div>
+          {user && (
+            <div className="flex flex-col items-center">
+              <Link to="/rate-alert-dashboard">
+                <img src={user?.photoURL} className="rounded-full w-10 h-10" />
+              </Link>
+              {/* <span className="text-sm">{user?.displayName}</span> */}
+            </div>
+          )}
           {user?.displayName ? (
             <button
               onClick={handleSignOut}
@@ -44,7 +43,7 @@ export default function Navbar() {
               Logout
             </button>
           ) : (
-            <Link to="/dashboard">Sign in</Link>
+            <Link to="/dashboard" className="underline text-[#81EBAB] font-semibold">Sign in</Link>
           )}
         </div>
       </div>

@@ -16,3 +16,7 @@ body {
 .bg-blur {
   filter: blur(90px);
 }
+
+.bg-blue-blur {
+  filter: blur(240px);
+}

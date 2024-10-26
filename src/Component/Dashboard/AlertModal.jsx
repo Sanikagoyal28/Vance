@@ -69,7 +69,6 @@ export default function AlertModal(props) {
 
       handleClose();
     } catch (error) {
-      console.error(error);
     }
   }
 

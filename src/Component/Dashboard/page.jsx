@@ -10,20 +10,21 @@ export default function Dashboard() {
 
   const { googleSignIn, user } = UserAuth();
 
-  // useEffect(() => {
-  //   if (user) {
-  //     navigate("/rate-alert-dashboard");
-  //   }
-  // }, [user, navigate]);
+  console.log(user);
+
+  useEffect(() => {
+    if (user && Object.keys(user).length > 0) {
+      navigate("/rate-alert-dashboard");
+    }
+  }, [user, navigate]);
 
   async function handleGoogleAuth() {
     try {
       await googleSignIn();
-      if (user) {
-        navigate("/rate-alert-dashboard");
-      }
+      // if (user) {
+      //   navigate("/rate-alert-dashboard");
+      // }
     } catch (err) {
-      console.log(err);
     }
   }
 
@@ -32,11 +33,6 @@ export default function Dashboard() {
       <Navbar />
       <div className="flex flex-col justify-center items-center bg-black w-full min-h-[100vh] text-white">
         <div className="w-80 sm:w-96 text-center mt-40 mb-32">
-          <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
-            <div className="absolute inset-0 justify-center">
-              <div className="bg-shape1 bg-[#4602D9] opacity-50 bg-blur"></div>
-            </div>
-          </div>
           <img src={megaphone} className="w-36 m-auto z-20" />
           <p className="font-bold text-3xl mb-6 z-20">
             Access <br />
@@ -47,7 +43,7 @@ export default function Dashboard() {
           </p>
 
           <button
-            className="rounded-full bg-[#333333] py-3 w-full my-9 flex items-center justify-center gap-x-1"
+            className="rounded-full bg-[#333333] py-3 w-full my-9 flex items-center justify-center gap-x-1 z-30 relative"
             onClick={handleGoogleAuth}
           >
             <img src={google} className="w-5 h-5" />
@@ -61,6 +57,12 @@ export default function Dashboard() {
               Terms and Conditions
             </span>
           </p>
+        </div>
+      </div>
+
+      <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
+        <div className="absolute inset-0 justify-center">
+          <div className="bg-shape1 bg-[#4602D9] opacity-50 bg-blur"></div>
         </div>
       </div>
     </>
