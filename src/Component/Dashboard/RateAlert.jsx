@@ -14,9 +14,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import UK from "../../assets/UK.svg";
 import { db } from "../../firebase";
-import { collection, query, onSnapshot, doc } from "firebase/firestore";
+import { collection, query, onSnapshot, doc, where } from "firebase/firestore";
 import Navbar from "../Navbar";
 import { CircularProgress } from "@mui/material";
+import { UserAuth } from "../../context/AuthContext";
 
 export default function RateAlert() {
   const [open, setOpen] = useState(false);
@@ -26,6 +27,8 @@ export default function RateAlert() {
   const [alerts, setAlerts] = useState([]);
   const [loader, setLoader] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const { user } = UserAuth();
 
   function handleCurrency(e) {
     setCurrency(e.target.value);
@@ -48,8 +51,10 @@ export default function RateAlert() {
   }, [currency]);
 
   useEffect(() => {
+    if (!user || !user.uid) return;
+
     setLoader(true);
-    const q = query(collection(db, "alerts"));
+    const q = query(collection(db, "alerts"), where("userId", "==", user?.uid));
     const unsub = onSnapshot(q, (querySnapshot) => {
       var prev_alerts = [];
       querySnapshot.forEach((doc) => {
@@ -61,7 +66,7 @@ export default function RateAlert() {
     });
 
     return () => unsub();
-  }, [currentPage]);
+  }, [currentPage, user]);
 
   const pageCount = Math.ceil(alerts.length / 5);
 
@@ -196,7 +201,7 @@ export default function RateAlert() {
                   return <Alert key={data.id} data={data} />;
                 })
             ) : (
-              <p>No previous alerts</p>
+              <p className="text-sm text-white text-center opacity-80 py-4">No previous alerts</p>
             )}
           </div>
         </div>
@@ -206,4 +211,3 @@ export default function RateAlert() {
     </>
   );
 }
-

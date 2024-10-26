@@ -8,6 +8,7 @@ import {
   collection,
   doc,
   getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
@@ -39,37 +40,50 @@ export default function AlertModal(props) {
     e.preventDefault();
 
     try {
-      // await addDoc(collection(db, "alerts"), {
-      //   userId: user.uid,
-      //   currency,
-      //   title,
-      //   targetRate: parseFloat(rate),
-      //   createdAt: new Date(),
-      //   isTriggered: false,
-      // });
+      if (!user || !user.uid) {
+        return;
+      }
 
-      const alertsRef = collection(db, "alerts");
-      const alertsQuery = query(
-        alertsRef,
-        where("userId", "==", user.uid),
-        where("currency", "==", currency),
-        where("targetRate", ">=", parseFloat(rate)),
-        where("isTriggered", "==", false)
-      );
-      const querySnapshot = await getDocs(alertsQuery);
-      
-      const updatePromises = querySnapshot.docs.map((alertDoc) => {
-        const alertRef = doc(db, "alerts", alertDoc.id);
-        return updateDoc(alertRef, { isTriggered: true });
+      await addDoc(collection(db, "alerts"), {
+        userId: user.uid,
+        currency,
+        title,
+        targetRate: parseFloat(rate),
+        createdAt: new Date(),
+        isTriggered: false,
       });
 
-      await Promise.all(updatePromises);
+      const alertsQuery = query(
+        collection(db, "alerts"),
+        where("userId", "==", user.uid)
+      );
+
+      const querySnapshot = await getDocs(alertsQuery);
+
+      const updates = [];
+
+      querySnapshot.forEach((docSnapshot) => {
+        const alertData = { ...docSnapshot.data(), id: docSnapshot.id };
+
+        if (alertData.currency === currency) {
+          if (alertData.targetRate >= parseFloat(rate)) {
+            const alertRef = doc(db, "alerts", docSnapshot.id);
+            updates.push(updateDoc(alertRef, { isTriggered: true }));
+          }
+          // else {
+
+          //   const alertRef = doc(db, "alerts", docSnapshot.id);
+          //   updates.push(updateDoc(alertRef, { isTriggered: false }));
+          // }
+        }
+      });
+
+      await Promise.all(updates);
 
       toast.success("New Alert added");
 
       handleClose();
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   function handleClose() {

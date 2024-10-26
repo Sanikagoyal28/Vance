@@ -45,7 +45,7 @@ export default function Alert(props) {
             ) : (
               <p className="text-white font-medium flex items-center gap-x-1">
                 {" "}
-                <img src={UAE} /> UAE{" "}
+                <img src={UAE} className="w-10 h-10" /> UAE{" "}
                 <span className="opacity-50 text-xs">(AED)</span>
               </p>
             )}

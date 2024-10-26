@@ -11,7 +11,8 @@ export default function Navbar() {
     try {
       await logOut();
       navigate("/");
-    } catch (error) {}
+    } catch (error) {
+    }
   };
 
   return (
