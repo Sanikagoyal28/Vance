@@ -7,14 +7,13 @@ export default function Navbar() {
   const { user, logOut } = UserAuth();
   const navigate = useNavigate();
 
-  console.log(user);
+  // console.log(user);
 
   const handleSignOut = async () => {
     try {
       await logOut();
       navigate("/");
     } catch (error) {
-      console.log(error);
     }
   };
 
