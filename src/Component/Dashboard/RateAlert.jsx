@@ -38,7 +38,13 @@ export default function RateAlert() {
     async function getGraphData() {
       await axios
         .get(
-          `https://web-api.vance.club/public/api/currency-converter/forex?code=${currency}INR%3DX&timeline=1M`
+          `https://web-api.vance.club/public/api/currency-converter/forex?code=${currency}INR%3DX&timeline=1M`,
+          {
+            headers: {
+              "Access-Control-Allow-Origin": "*", 
+              "Content-Type": "application/json",
+            },
+          }
         )
         .then((res) => {
           setGraphData(res.data);
@@ -173,7 +179,7 @@ export default function RateAlert() {
                 color="[#7265EE]"
                 sx={{
                   "& .Mui-selected": {
-                    backgroundColor: "#7265EE", // for active
+                    backgroundColor: "#7265EE",
                     color: "white",
                     fontWeight: "bold",
                   },
@@ -201,7 +207,9 @@ export default function RateAlert() {
                   return <Alert key={data.id} data={data} />;
                 })
             ) : (
-              <p className="text-sm text-white text-center opacity-80 py-4">No previous alerts</p>
+              <p className="text-sm text-white text-center opacity-80 py-4">
+                No previous alerts
+              </p>
             )}
           </div>
         </div>

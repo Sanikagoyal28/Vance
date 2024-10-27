@@ -71,7 +71,6 @@ export default function AlertModal(props) {
             updates.push(updateDoc(alertRef, { isTriggered: true }));
           }
           // else {
-
           //   const alertRef = doc(db, "alerts", docSnapshot.id);
           //   updates.push(updateDoc(alertRef, { isTriggered: false }));
           // }

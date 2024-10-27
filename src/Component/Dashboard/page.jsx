@@ -58,11 +58,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
+      <div className="absolute top-12 z-10 left-[34%] inline-flex justify-center inset-0 flex-row">
         <div className="absolute inset-0 justify-center">
           <div className="bg-shape1 bg-[#4602D9] opacity-50 bg-blur"></div>
         </div>
-      </div> */}
+      </div>
     </>
   );
 }
